@@ -1,0 +1,74 @@
+1. Query the list of CITY names starting with vowels (i.e., a, e, i, o, or u) from STATION. Your result cannot contain duplicates.
+ select city from station where city like 'A%' or city like 'E%' or city like 'I%' or city like 'O%' or city like 'U%';
+
+2. Query the list of CITY names ending with vowels (a, e, i, o, u) from STATION. Your result cannot contain duplicates.
+select distinct(city) from station where city like '%A' or city like '%E' or city like '%I' or city like '%O' or city like '%U';
+
+3. Write a solution to find the customer_number for the customer who has placed the largest number of orders.The test cases are generated so that exactly one customer will have placed more orders than any other customer.
+select customer_number from orders where order_number=(select max(order_number) from orders);
+
+4. Write a solution to report all the duplicate emails. Note that it's guaranteed that the email field is not NULL.
+select email from person group by email having count(email)>1;
+
+5. Write a solution to find all the classes that have at least five students.
+select class from courses group by class having count(class)>=5;
+
+6. Find the names of the customer that are either:
+referred by any customer with id != 2. not referred by any customer.
+select name from customer where referee_id<>2 or referee_id is null;
+
+7. Write a query that prints a list of employee names (i.e.: the name attribute) for employees in Employee having a salary greater than $2000per month who have been employees for less than 10 months. Sort your result by ascending employee_id.
+select name from employee where salary>2000 and months<10;
+
+8. Query the average population for all cities in CITY, rounded down to the nearest integer.
+select round(avg(population)) from city;
+
+9.Query the sum of the populations for all Japanese cities in CITY. The COUNTRYCODE for Japan is JPN.
+select sum(population) from city group by countrycode having countrycode='JPN'
+
+10.Query the difference between the maximum and minimum populations in CITY.
+select max(population)- min(population) from city;
+
+11.Query the following two values from the STATION table:
+The sum of all values in LAT_N rounded to a scale of  decimal places.
+The sum of all values in LONG_W rounded to a scale of  decimal places.
+select round(sum(LAT_N),2) as lat, round(sum(LONG_W),2) as lon from station;
+
+12.Find the difference between the total number of CITY entries in the table and the number of distinct CITY entries in the table.
+select count(city)-count(distinct(city)) from station;
+
+13. Query a count of the number of cities in CITY having a Population larger than 100000.
+select count(*) from city where population>100000
+
+14. Query the total population of all cities in CITY where District is California.
+select sum(population) from city where district='california'
+
+15. Query the average population of all cities in CITY where District is California.
+select avg(population) from city where district='california'
+
+16.Write a query that prints a list of employee names (i.e.: the name attribute) from the Employee table in alphabetical order.
+select name from employee order by name
+
+17. Query all columns (attributes) for every row in the CITY table.
+select* from city;
+
+18. Query all columns for a city in CITY with the ID 1661.
+select* from city where ID=1661
+
+19. Query all attributes of every Japanese city in the CITY table. The COUNTRYCODE for Japan is JPN.
+select* from city where countrycode='jpn'
+
+20. Query the names of all the Japanese cities in the CITY table. The COUNTRYCODE for Japan is JPN.
+select name from city where countrycode='jpn'
+
+21. Query a list of CITY and STATE from the STATION table.
+select city,state from station;
+
+22. Query the total population of all cities in CITY where District is California.
+select sum(population) from city where district='california'
+
+23. Query a list of CITY names from STATION for cities that have an even ID number. Print the results in any order, but exclude duplicates from the answer.
+select distinct(city) from station where id%2=0
+
+24. Query the NAME field for all American cities in the CITY table with populations larger than 120000. The CountryCode for America is USA.
+select name from city where population>120000 and countrycode='USA';
