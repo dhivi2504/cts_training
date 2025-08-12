@@ -1,0 +1,136 @@
+🔹 FULL OUTER JOIN (Emulated in MySQL using UNION of LEFT and RIGHT JOIN)
+1. List all employees and departments, even if they don't match.(Helpful to find both unassigned employees and empty departments)
+ SELECT E.name, D.department_name FROM Employees E LEFT JOIN Departments D ON E.department_id = D.department_id UNION SELECT E.name, D.department_name FROM Employees E RIGHT JOIN Departments D ON E.department_id = D.department_id;
++---------+-----------------+
+| name    | department_name |
++---------+-----------------+
+| Alice   | HR              |
+| Bob     | IT              |
+| Charlie | HR              |
+| David   | Finance         |
+| Eve     | NULL            |
+| Frank   | Sales           |
+| Grace   | IT              |
+| Hannah  | NULL            |
+| NULL    | Marketing       |
++---------+-----------------+
+ 
+2. Show which employees or departments are missing a match.
+SELECT E.name, D.department_name FROM Employees E LEFT JOIN Departments D ON E.department_id = D.department_id WHERE D.department_id IS NULL UNION SELECT E.name, D.department_name FROM Employees E RIGHT JOIN Departments D ON E.department_id = D.department_id WHERE E.emp_id IS NULL;
++--------+-----------------+
+| name   | department_name |
++--------+-----------------+
+| Eve    | NULL            |
+| Hannah | NULL            |
+| NULL   | Marketing       |
++--------+-----------------+
+3 rows in set (0.01 sec)
+
+🔹 SELF JOIN
+1. Find all pairs of employees who work in the same department.
+ SELECT E1.name, E2.name FROM Employees E1 JOIN Employees E2 ON E1.department_id = E2.department_id WHERE E1.emp_id != E2.emp_id;
++---------+---------+
+| name    | name    |
++---------+---------+
+| Charlie | Alice   |
+| Grace   | Bob     |
+| Alice   | Charlie |
+| Bob     | Grace   |
++---------+---------+
+4 rows in set (0.00 sec)
+
+2. List employees along with their colleagues in the same department (exclude self).
+SELECT E1.name, E2.name AS colleague FROM Employees E1 JOIN Employees E2 ON E1.department_id = E2.department_id WHERE E1.emp_id != E2.emp_id;
++---------+-----------+
+| name    | colleague |
++---------+-----------+
+| Charlie | Alice     |
+| Grace   | Bob       |
+| Alice   | Charlie   |
+| Bob     | Grace     |
++---------+-----------+
+4 rows in set (0.00 sec)
+
+3. Find all employee pairs where one earns more than the other.
+SELECT E1.name, E2.name FROM Employees E1 JOIN Employees E2 ON E1.department_id = E2.department_id WHERE E1.salary > E2.salary OR E1.salary < E2.salary;
++---------+---------+
+| name    | name    |
++---------+---------+
+| Charlie | Alice   |
+| Grace   | Bob     |
+| Alice   | Charlie |
+| Bob     | Grace   |
++---------+---------+
+4 rows in set (0.00 sec)
+
+4. List each employee with the name of the highest-paid person in their department.
+SELECT E1.name, E2.name AS highest_paid_colleague FROM Employees E1 JOIN Employees E2 ON E1.department_id = E2.department_id WHERE E2.salary = (SELECT MAX(salary) FROM Employees WHERE department_id = E1.department_id);
++---------+------------------------+
+| name    | highest_paid_colleague |
++---------+------------------------+
+| Charlie | Charlie                |
+| Alice   | Charlie                |
+| David   | David                  |
+| Frank   | Frank                  |
+| Grace   | Grace                  |
+| Bob     | Grace                  |
++---------+------------------------+
+6 rows in set (0.00 sec)
+
+🔹 CROSS JOIN
+1. List all possible employee-department combinations.
+ SELECT E.name, D.department_name FROM Employees CROSS JOIN Departments D;
++---------+-----------------+
+| name    | department_name |
++---------+-----------------+
+| Alice   | Marketing       |
+| Alice   | Sales           |
+| Alice   | Finance         |
+| Alice   | IT              |
+| Alice   | HR              |
+| Bob     | Marketing       |
+| Bob     | Sales           |
+| Bob     | Finance         |
+| Bob     | IT              |
+| Bob     | HR              |
+| Charlie | Marketing       |
+| Charlie | Sales           |
+| Charlie | Finance         |
+| Charlie | IT              |
+| Charlie | HR              |
+| David   | Marketing       |
+| David   | Sales           |
+| David   | Finance         |
+| David   | IT              |
+| David   | HR              |
+| Eve     | Marketing       |
+| Eve     | Sales           |
+| Eve     | Finance         |
+| Eve     | IT              |
+| Eve     | HR              |
+| Frank   | Marketing       |
+| Frank   | Sales           |
+| Frank   | Finance         |
+| Frank   | IT              |
+| Frank   | HR              |
+| Grace   | Marketing       |
+| Grace   | Sales           |
+| Grace   | Finance         |
+| Grace   | IT              |
+| Grace   | HR              |
+| Hannah  | Marketing       |
+| Hannah  | Sales           |
+| Hannah  | Finance         |
+| Hannah  | IT              |
+| Hannah  | HR              |
++---------+-----------------+
+40 rows in set (0.00 sec)
+
+2. Count how many total combinations of employees and departments exist.
+SELECT COUNT(*) FROM Employees CROSS JOIN Departments;
++----------+
+| COUNT(*) |
++----------+
+|       40 |
++----------+
+1 row in set (0.03 sec)
